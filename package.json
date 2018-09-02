@@ -10,5 +10,8 @@
     "serverless": "^1.30.3",
     "serverless-dotenv-plugin": "^1.2.0",
     "xo": "^0.22.0"
+  },
+  "dependencies": {
+    "twilio": "^3.19.2"
   }
 }
