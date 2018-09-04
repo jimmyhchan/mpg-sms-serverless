@@ -19,10 +19,13 @@ app.use(twilio.webhook({
 // const twilioClient = require('twilio')(twilioAccountSid, twilioAuthToken);
 const {MessagingResponse} = twilio.twiml;
 
-// TODO: unit test here
-const calculateMpg = (amount, odometerPrev, odometerNow) => {
+// number -> string
+const formatMpg = mpg => {
+  return `${mpg} mpg`;
+};
+const calculateMpg = (amount, odometerPrev, odometerNow, formatter = formatMpg) => {
   // TODO: mpg and other units
-  return Number.parseFloat((odometerNow - odometerPrev) / amount).toFixed(1) + ' mpg';
+  return formatter(Number.parseFloat((odometerNow - odometerPrev) / amount).toFixed(1));
 };
 
 const getPrevOdometer = id => {
@@ -37,7 +40,7 @@ const getPrevOdometer = id => {
 
 const parseIncomingSms = message => {
   // expect  [id] [odometer] [volume]
-  const [id, odometer, volume] = message.split(/\s+/);
+  const [id, odometer, volume] = message.split(/\s+/).map(parseFloat);
   return [id, odometer, volume];
 };
 
@@ -60,5 +63,7 @@ app.get('/fuelup', (req, res) => {
 });
 
 module.exports = {
-  app
+  app,
+  parseIncomingSms,
+  calculateMpg
 };
