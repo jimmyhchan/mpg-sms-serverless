@@ -10,6 +10,7 @@
     "ava": "^0.25.0",
     "serverless": "^1.30.3",
     "serverless-dotenv-plugin": "^1.2.0",
+    "supertest": "^3.1.0",
     "xo": "^0.22.0"
   },
   "dependencies": {
