@@ -4,6 +4,7 @@
 // const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 // const twilioClient = require('twilio')(twilioAccountSid, twilioAuthToken);
 const {MessagingResponse} = require('twilio').twiml;
+const {makeXmlResponse} = require('./utils');
 
 /*
 twilioClient.messages.create({
@@ -12,25 +13,10 @@ twilioClient.messages.create({
   to: process.env.MY_PHONE_NUMBER
 }).then(console.log.bind(console)).done();
 */
-const makeResponse = () => {
+const smsGet = (event, context, callback) => {
   const twiml = new MessagingResponse();
   twiml.message('from my lambda');
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'text/xml',
-      isBase64Encoded: false
-      // 'access-control-allow-origin': '*',
-      // 'connection': 'close',
-    },
-    body: twiml.toString()
-
-  };
-};
-const smsGet = (event, context, callback) => {
-  const {headers} = event;
-  callback(null, makeResponse(headers));
+  callback(null, makeXmlResponse(twiml.toString));
 };
 
 module.exports = {

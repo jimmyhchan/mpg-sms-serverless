@@ -9,6 +9,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs8.10
+  memorySize: 128
 
 # you can overwrite defaults here
 #  stage: dev
@@ -50,6 +51,17 @@ functions:
       - http:
           path: 'sms'
           method: 'get'
+  fuelup:
+    handler: fuelup/lambda.add
+    events:
+      - http:
+          path: 'fuelup'
+          method: 'post'
+      # - http:
+      #     path: 'fuelup'
+      #     method: 'get'
+
+
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
