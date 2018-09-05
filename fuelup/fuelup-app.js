@@ -1,6 +1,9 @@
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 const twilio = require('twilio');
+const fuelupDb = require('./db');
+const log = require('debug')('twilio-mpg:fuelup');
 
 const app = express();
 // parse incoming form bodies nec for twilio.webhook validation
@@ -24,18 +27,17 @@ const formatMpg = mpg => {
   return `${mpg} mpg`;
 };
 const calculateMpg = (amount, odometerPrev, odometerNow, formatter = formatMpg) => {
+  log(`found data ${odometerPrev}`);
   // TODO: mpg and other units
   return formatter(Number.parseFloat((odometerNow - odometerPrev) / amount).toFixed(1));
 };
 
-const getPrevOdometer = id => {
-  // TODO: firebase or dynamodb here
-  return {
-    id,
-    odometer: 123456
-    // date?
-    // price?
-  };
+const getPrevFuelup = async (id, phone) => {
+  // TODO: sanitize id / phone data
+  return fuelupDb.get(id, phone);
+};
+const addFuelup = async (id, phone, odometer) => {
+  return fuelupDb.put(id, phone, odometer);
 };
 
 const parseIncomingSms = message => {
@@ -44,19 +46,21 @@ const parseIncomingSms = message => {
   return [id, odometer, volume];
 };
 
-const incomingSmsToResponseMessage = message => {
+const incomingSmsToResponseMessage = async (message, phone) => {
   const [id, odometerNow, volume] = parseIncomingSms(message);
-  const {odometer} = getPrevOdometer(id);
+  const {odometer} = await getPrevFuelup(id, phone);
+  await addFuelup(id, phone, odometerNow);
   return calculateMpg(volume, odometer, odometerNow);
 };
 
-app.post('/fuelup', (req, res) => {
+app.post('/fuelup', asyncHandler(async (req, res, next) => {
   const incoming = req.body.Body;
+  const from = req.body.From;
   const twiml = new MessagingResponse();
-  twiml.message(incomingSmsToResponseMessage(incoming));
+  twiml.message(await incomingSmsToResponseMessage(incoming, from));
   res.type('text/xml');
   res.send(twiml.toString());
-});
+}));
 
 app.get('/fuelup', (req, res) => {
   res.send('hello from server');
