@@ -2,6 +2,8 @@
 // usage
 //   localhost fuelup
 // will bring up the fuelup express app locally
+require('dotenv').config()
+
 const func = process.argv.slice(2)[0];
 
 process.env.NODE_ENV = 'TEST';

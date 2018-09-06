@@ -4,6 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "test": "xo && ava",
+    "test:integration": "node -r dotenv/config test-integration.js",
     "start": "node app.js"
   },
   "devDependencies": {

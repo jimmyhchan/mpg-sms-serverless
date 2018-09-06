@@ -7,6 +7,9 @@ firebase.initializeApp({
 });
 
 const db = firebase.database();
+
+firebase.auth().signInWithEmailAndPassword(process.env.FIREBASE_AUTH_EMAIL, process.env.FIREBASE_AUTH_PASSWORD);
+
 if (debug.enabled) {
   firebase.database.enableLogging(debug);
 }
@@ -26,20 +29,29 @@ const fuelupKey = (id) => {
 const get = (id, phone) => {
   const ukey = userCarKey(id, phone);
   const fkey = fuelupKey(id);
-  const ref = db.ref(`/cars/${ukey}/fuelups/${fkey}/`);
-  return ref.limitToLast(1).once('value').then(snapshot => {
-    const val = snapshot.val();
+  const ref = db.ref(`/cars/${ukey}/fuelups/`);
+  // get the single latest fuelup for this user-car
+  return ref.limitToLast(1).orderByChild("timestamp").once('value').then(snapshot => {
+    let val;
+    snapshot.forEach(childSnapshot => {
+      val = childSnapshot.val();
+      // this should only be length 1 but explicitly end anyway
+      return true;
+    })
     debug(`db call with ${ukey} returned ${JSON.stringify(val)}`);
     return val;
   });
 };
 
-const put = (id, phone, odometer) => {
+const put = (id, phone, odometer, mpgString) => {
   const ukey = userCarKey(id, phone);
   const ref = db.ref(`/cars/${ukey}/fuelups/`);
   return ref.push({
     timestamp: firebase.database.ServerValue.TIMESTAMP,
-    odometer
+    odometer,
+    plate: id,
+    phone,
+    mpgString
   });
 };
 

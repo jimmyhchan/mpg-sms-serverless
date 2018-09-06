@@ -36,8 +36,8 @@ const getPrevFuelup = async (id, phone) => {
   // TODO: sanitize id / phone data
   return fuelupDb.get(id, phone);
 };
-const addFuelup = async (id, phone, odometer) => {
-  return fuelupDb.put(id, phone, odometer);
+const addFuelup = async (id, phone, odometer, mpgString) => {
+  return fuelupDb.put(id, phone, odometer, mpgString);
 };
 
 const parseIncomingSms = message => {
@@ -49,8 +49,9 @@ const parseIncomingSms = message => {
 const incomingSmsToResponseMessage = async (message, phone) => {
   const [id, odometerNow, volume] = parseIncomingSms(message);
   const {odometer} = await getPrevFuelup(id, phone);
-  await addFuelup(id, phone, odometerNow);
-  return calculateMpg(volume, odometer, odometerNow);
+  const mpgString = calculateMpg(volume, odometer, odometerNow);
+  await addFuelup(id, phone, odometerNow, mpgString);
+  return mpgString;
 };
 
 app.post('/fuelup', asyncHandler(async (req, res, next) => {
