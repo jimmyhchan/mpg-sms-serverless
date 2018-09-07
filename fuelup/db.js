@@ -16,9 +16,6 @@ if (debug.enabled) {
 const userCarKey = (id, phone) => {
   return `${id}${phone}`;
 };
-const fuelupKey = (id) => {
-  return `uniq-${id}`;
-};
 
 /**
  *
@@ -28,16 +25,15 @@ const fuelupKey = (id) => {
  */
 const get = (id, phone) => {
   const ukey = userCarKey(id, phone);
-  const fkey = fuelupKey(id);
   const ref = db.ref(`/cars/${ukey}/fuelups/`);
   // get the single latest fuelup for this user-car
-  return ref.limitToLast(1).orderByChild("timestamp").once('value').then(snapshot => {
+  return ref.limitToLast(1).orderByChild('timestamp').once('value').then(snapshot => {
     let val;
     snapshot.forEach(childSnapshot => {
       val = childSnapshot.val();
       // this should only be length 1 but explicitly end anyway
       return true;
-    })
+    });
     debug(`db call with ${ukey} returned ${JSON.stringify(val)}`);
     return val;
   });
@@ -54,8 +50,18 @@ const put = (id, phone, odometer, mpgString) => {
     mpgString
   });
 };
+const putUser = (id, phone) => {
+  const ukey = userCarKey(id, phone);
+  const ref = db.ref(`/cars/${ukey}/fuelups/`);
+  return ref.push({
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    plate: id,
+    phone
+  });
+};
 
 module.exports = {
   get,
-  put
+  put,
+  putUser
 };

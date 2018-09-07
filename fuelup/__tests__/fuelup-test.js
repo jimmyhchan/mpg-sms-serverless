@@ -7,7 +7,11 @@ test('calculations for mpg', t => {
   t.is(calculateMpg(5, 199, 200), '0.2 mpg');
 });
 test('parse incoming sms', t => {
-  t.deepEqual(parseIncomingSms('123 456 789'), [123, 456, 789]);
+  t.deepEqual(parseIncomingSms('123 456 789'), ['123', 456, 789]);
+  t.deepEqual(parseIncomingSms('1F2x3q 456 789'), ['1F2X3Q', 456, 789]);
+});
+test('parse incoming sms register', t => {
+  t.deepEqual(parseIncomingSms('register 123'), ['123']);
 });
 test('endPoint testing', async t => {
   t.plan(1);

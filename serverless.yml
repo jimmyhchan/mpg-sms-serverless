@@ -45,12 +45,6 @@ package:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.sms
-    events:
-      - http:
-          path: 'sms'
-          method: 'get'
   fuelup:
     handler: fuelup/lambda.add
     events:
