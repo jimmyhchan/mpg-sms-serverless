@@ -5,6 +5,7 @@
   "scripts": {
     "test": "xo && ava",
     "test:integration": "node -r dotenv/config test-integration.js",
+    "fixGrpc": "npm rebuild --target=8.10.0 --target_platform=linux --target_arch=x64 --target_libc=glibc --update-binary",
     "start": "node app.js"
   },
   "devDependencies": {

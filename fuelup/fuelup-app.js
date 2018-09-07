@@ -12,9 +12,8 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 
 // validate every request for this entire app
 // uses TWILIO_AUTH_TOKEN from dotenv
-// TODO: why is this failing to validate
 app.use(twilio.webhook({
-  validate: false // process.env.NODE_ENV !== 'TEST'
+  validate: process.env.NODE_ENV !== 'TEST'
 }));
 
 // const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
