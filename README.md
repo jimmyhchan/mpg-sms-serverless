@@ -1,9 +1,10 @@
 # twilio-mpg
-.
+![screenshot](mpg-twilio-screenshot.jpeg "screenshot")
+
 
 ## Try it!
 text "register [license plate]"  e.g. "register C99X87A" to `510` 945 `3033`
-every fuel up text "\[license plate\] \[odometer\] [gallons\]" and we will track your fuel economy
+every fuel up text "\[license plate\] \[odometer\] [gallons\]" and we will track of your fuel economy.
 
 
 ## Technologies
