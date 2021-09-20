@@ -3,7 +3,7 @@
 
 
 ## Try it!
-text "register [license plate]"  e.g. "register C99X87A" to `510` 945 `3033`
+text "register [license plate]"  e.g. "register C99X87A" to the twilio sms number
 every fuel up text "\[license plate\] \[odometer\] [gallons\]" and we will track of your fuel economy.
 
 
